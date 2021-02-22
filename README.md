@@ -1,4 +1,4 @@
-# Dopamine Dashboard
+# Dopamine Dashboard Demo
 
 A project inspired by this video: [I Built a Dopamine Box](https://www.youtube.com/watch?v=JJeQIXBdVuk)
 
