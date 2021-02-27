@@ -1,13 +1,28 @@
 import 'package:dopamine_dashboard/dashboard.dart';
+import 'package:dopamine_dashboard/models/goalsModel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => GoalsModel(),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final goals = Provider.of<GoalsModel>(context, listen: false);
+
+    goals.initForTesting();
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -29,35 +44,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Map<String, bool> _goals;
-  Dashboard _dashboard;
   final _formKey = GlobalKey<FormState>();
   final newGoalController = TextEditingController();
 
-  @override
-  initState() {
-    super.initState();
-    _goals = {
-      'Wake up early': false,
-      'Walk dog': false,
-      'Practice guitar': false,
-      'Meditate for 10 minutes': false,
-      'Spend time with family': false,
-      'Read for 30 minutes': false,
-    };
-    _dashboard = Dashboard(key: UniqueKey(), goals: _goals);
-  }
-
-  void _resetDashboard() {
-    setState(() {
-      _dashboard = Dashboard(key: UniqueKey(), goals: _goals);
-    });
-  }
-
   void _saveItem() {
     if (_formKey.currentState.validate()) {
-      print(newGoalController.text);
+      context.read<GoalsModel>().add(newGoalController.text);
     }
+    _formKey.currentState.reset();
   }
 
   void _addItemPrompt() {
@@ -69,8 +63,12 @@ class _MyHomePageState extends State<MyHomePage> {
           content: Form(
             key: _formKey,
             child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) {
-                  if (_goals.containsKey(value)) {
+                  if (value.isEmpty) {
+                    return 'Goal name can not be empty';
+                  }
+                  if (context.read<GoalsModel>().names.contains(value)) {
                     return 'Goal already exists';
                   }
                   return null;
@@ -101,14 +99,17 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: _dashboard,
+        child: Dashboard(),
       ),
       persistentFooterButtons: [
         Row(
           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             OutlinedButton(
-              onPressed: _resetDashboard,
+              onPressed: () {
+                var goals = context.read<GoalsModel>();
+                goals.resetAllGoalsState();
+              },
               child: Row(
                 children: [
                   Text('Reset'),

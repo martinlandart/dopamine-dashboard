@@ -1,84 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:provider/provider.dart';
 
 import 'goal.dart';
+import 'models/goalsModel.dart';
 
-class Dashboard extends StatefulWidget {
-  const Dashboard({
-    Key key,
-    @required this.goals,
-  }) : assert(goals != null);
+// class Dashboard extends StatefulWidget {
+//   const Dashboard({
+//     Key key,
+//     @required this.goals,
+//   }) : assert(goals != null);
 
-  final Map<String, bool> goals;
+//   final Map<String, bool> goals;
 
-  @override
-  _DashboardState createState() => _DashboardState();
-}
+//   @override
+//   _DashboardState createState() => _DashboardState();
+// }
 
-class _DashboardState extends State<Dashboard> {
-  Set<String> _completedGoals = Set<String>();
-
-  @override
-  void didUpdateWidget(covariant oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _completedGoals = Set<String>();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _completedGoals = Set<String>();
-  }
-
-  void _onGoalCompleted(bool selected, String name) {
-    if (selected == true) {
-      setState(() {
-        _completedGoals.add(name);
-      });
-    } else {
-      setState(() {
-        _completedGoals.remove(name);
-      });
-    }
-
-    if (_completedGoals.length == widget.goals.length) {
-      print('all tasks complete!!!');
-      showDialog(
-          context: context,
-          builder: (_) => AssetGiffyDialog(
-                image: Image(image: AssetImage('images/success.gif')),
-                title: Text(
-                  'Congratulations!',
-                  style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
-                ),
-                description: Text(
-                  'You completed all of your goals for the day!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(),
-                ),
-                entryAnimation: EntryAnimation.LEFT,
-                onOkButtonPressed: () {
-                  Navigator.of(context).pop();
-                  setState(() {
-                    _completedGoals = Set<String>();
-                  });
-                },
-                onlyOkButton: true,
-              ));
-    }
-  }
-
+class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final goals = <Goal>[];
+    final _goals = <Goal>[];
 
-    for (var item in widget.goals.entries) {
-      goals.add(
+    var listenedGoals = context.watch<GoalsModel>();
+
+    for (var goal in listenedGoals.goals.entries) {
+      _goals.add(
         Goal(
-          name: item.key,
-          value: _completedGoals.contains(item.key),
+          name: goal.key,
+          value: goal.value,
           onChanged: (bool completed) {
-            return {_onGoalCompleted(completed, item.key)};
+            return {listenedGoals.update(goal.key, completed)};
           },
           iconLocation: Icons.check,
           color: Colors.greenAccent,
@@ -86,10 +38,35 @@ class _DashboardState extends State<Dashboard> {
       );
     }
 
+    if (listenedGoals.allGoalsComplete()) {
+      print('all tasks complete!!!');
+      showDialog(
+        context: context,
+        builder: (_) => AssetGiffyDialog(
+          image: Image(image: AssetImage('images/success.gif')),
+          title: Text(
+            'Congratulations!',
+            style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+          ),
+          description: Text(
+            'You completed all of your goals for the day!',
+            textAlign: TextAlign.center,
+            style: TextStyle(),
+          ),
+          entryAnimation: EntryAnimation.LEFT,
+          onOkButtonPressed: () {
+            Navigator.of(context).pop();
+            listenedGoals.resetAllGoalsState();
+          },
+          onlyOkButton: true,
+        ),
+      );
+    }
+
     return Container(
       child: ListView.builder(
-        itemBuilder: (BuildContext context, int index) => goals[index],
-        itemCount: goals.length,
+        itemBuilder: (BuildContext context, int index) => _goals[index],
+        itemCount: _goals.length,
       ),
     );
   }
