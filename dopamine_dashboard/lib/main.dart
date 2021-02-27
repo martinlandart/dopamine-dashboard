@@ -61,11 +61,35 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: _dashboard,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _resetDashboard,
-        tooltip: 'Restart',
-        child: Icon(Icons.loop_sharp),
-      ),
+      persistentFooterButtons: [
+        Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            OutlinedButton(
+              onPressed: _resetDashboard,
+              child: Row(
+                children: [
+                  Text('Reset'),
+                  Icon(Icons.loop_sharp),
+                ],
+              ),
+            ),
+            FlatButton(
+              minWidth: 100,
+              onPressed: () => print('pressed'),
+              child: Row(
+                children: [
+                  Text('Add'),
+                  Icon(
+                    Icons.add,
+                  )
+                ],
+              ),
+              color: Theme.of(context).accentColor,
+            ),
+          ],
+        )
+      ],
     );
   }
 }
