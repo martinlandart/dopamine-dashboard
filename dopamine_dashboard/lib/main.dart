@@ -31,6 +31,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Map<String, bool> _goals;
   Dashboard _dashboard;
+  final _formKey = GlobalKey<FormState>();
+  final newGoalController = TextEditingController();
 
   @override
   initState() {
@@ -50,6 +52,46 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _dashboard = Dashboard(key: UniqueKey(), goals: _goals);
     });
+  }
+
+  void _saveItem() {
+    if (_formKey.currentState.validate()) {
+      print(newGoalController.text);
+    }
+  }
+
+  void _addItemPrompt() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("New daily goal"),
+          content: Form(
+            key: _formKey,
+            child: TextFormField(
+                validator: (value) {
+                  if (_goals.containsKey(value)) {
+                    return 'Goal already exists';
+                  }
+                  return null;
+                },
+                controller: newGoalController),
+          ),
+          actions: [
+            FlatButton(
+              child: Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              onPressed: _saveItem,
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -76,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             FlatButton(
               minWidth: 100,
-              onPressed: () => print('pressed'),
+              onPressed: _addItemPrompt,
               child: Row(
                 children: [
                   Text('Add'),
