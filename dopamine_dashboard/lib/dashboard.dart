@@ -5,18 +5,6 @@ import 'package:provider/provider.dart';
 import 'goal.dart';
 import 'models/goalsModel.dart';
 
-// class Dashboard extends StatefulWidget {
-//   const Dashboard({
-//     Key key,
-//     @required this.goals,
-//   }) : assert(goals != null);
-
-//   final Map<String, bool> goals;
-
-//   @override
-//   _DashboardState createState() => _DashboardState();
-// }
-
 class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
