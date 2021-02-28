@@ -19,9 +19,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final goals = Provider.of<GoalsModel>(context, listen: false);
-
-    goals.initForTesting();
+    Provider.of<GoalsModel>(context, listen: false).readFromDatabase();
 
     return MaterialApp(
       title: 'Dopamine Dashboard',

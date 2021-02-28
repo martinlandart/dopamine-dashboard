@@ -1,9 +1,8 @@
+import 'package:dopamine_dashboard/goal_list_item.dart';
+import 'package:dopamine_dashboard/models/goals_model.dart';
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:provider/provider.dart';
-
-import 'goal.dart';
-import 'models/goals_model.dart';
 
 class Dashboard extends StatelessWidget {
   @override
@@ -17,8 +16,8 @@ class Dashboard extends StatelessWidget {
         GoalListItem(
           name: goal.key,
           value: goal.value,
-          onChanged: (bool completed) {
-            return {listenedGoals.update(goal.key, completed)};
+          onChanged: (bool completed) async {
+            return await listenedGoals.update(goal.key, completed);
           },
           iconLocation: Icons.check,
           color: Colors.greenAccent,
@@ -34,7 +33,16 @@ class Dashboard extends StatelessWidget {
 
     return Container(
       child: ListView.builder(
-        itemBuilder: (BuildContext context, int index) => _goals[index],
+        itemBuilder: (BuildContext context, int index) => Dismissible(
+          key: UniqueKey(),
+          child: _goals[index],
+          onDismissed: (direction) async {
+            // var name = _goals[index].name;
+            // _goals.removeAt(index);
+            await listenedGoals.remove(_goals[index].name);
+          },
+          background: Container(color: Colors.red),
+        ),
         itemCount: _goals.length,
       ),
     );
