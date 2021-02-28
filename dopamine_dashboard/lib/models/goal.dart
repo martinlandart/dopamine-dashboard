@@ -9,7 +9,7 @@ class Goal {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'isComplete': isComplete,
+      'isComplete': isComplete ? 1 : 0, // SQLite doesn't support bool
     };
   }
 

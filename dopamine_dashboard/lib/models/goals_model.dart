@@ -13,10 +13,13 @@ class GoalsModel extends ChangeNotifier {
 
   void readFromDatabase() {
     database.goals().then((List<Goal> goals) {
-      var mapEntries =
+      var dbEntries =
           goals.map((goal) => MapEntry(goal.name, goal.isComplete)).toList();
 
-      _goals.addEntries(mapEntries);
+      var dbGoalNames = goals.map((goal) => goal.name).toList();
+
+      _goals.removeWhere((name, _) => !dbGoalNames.contains(name));
+      _goals.addEntries(dbEntries);
       notifyListeners();
     });
   }
