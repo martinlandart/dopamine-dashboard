@@ -40,33 +40,40 @@ class Dashboard extends StatelessWidget {
 
     if (listenedGoals.allGoalsComplete()) {
       print('all tasks complete!!!');
-      showDialog(
-        context: context,
-        builder: (_) => AssetGiffyDialog(
-          image: Image(image: AssetImage('images/success.gif')),
-          title: Text(
-            'Congratulations!',
-            style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
-          ),
-          description: Text(
-            'You completed all of your goals for the day!',
-            textAlign: TextAlign.center,
-            style: TextStyle(),
-          ),
-          entryAnimation: EntryAnimation.LEFT,
-          onOkButtonPressed: () {
-            Navigator.of(context).pop();
-            listenedGoals.resetAllGoalsState();
-          },
-          onlyOkButton: true,
-        ),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showAllGoalsCompletedDialog(context, listenedGoals);
+      });
     }
 
     return Container(
       child: ListView.builder(
         itemBuilder: (BuildContext context, int index) => _goals[index],
         itemCount: _goals.length,
+      ),
+    );
+  }
+
+  Future showAllGoalsCompletedDialog(
+      BuildContext context, GoalsModel listenedGoals) {
+    return showDialog(
+      context: context,
+      builder: (_) => AssetGiffyDialog(
+        image: Image(image: AssetImage('images/success.gif')),
+        title: Text(
+          'Congratulations!',
+          style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+        ),
+        description: Text(
+          'You completed all of your goals for the day!',
+          textAlign: TextAlign.center,
+          style: TextStyle(),
+        ),
+        entryAnimation: EntryAnimation.LEFT,
+        onOkButtonPressed: () {
+          Navigator.of(context).pop();
+          listenedGoals.resetAllGoalsState();
+        },
+        onlyOkButton: true,
       ),
     );
   }
