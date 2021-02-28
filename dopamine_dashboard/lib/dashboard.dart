@@ -27,7 +27,6 @@ class Dashboard extends StatelessWidget {
     }
 
     if (listenedGoals.allGoalsComplete()) {
-      print('all tasks complete!!!');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showAllGoalsCompletedDialog(context, listenedGoals);
       });
