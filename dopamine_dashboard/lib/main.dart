@@ -1,5 +1,5 @@
 import 'package:dopamine_dashboard/dashboard.dart';
-import 'package:dopamine_dashboard/models/goalsModel.dart';
+import 'package:dopamine_dashboard/models/goals_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

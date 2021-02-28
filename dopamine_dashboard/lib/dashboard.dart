@@ -3,18 +3,18 @@ import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:provider/provider.dart';
 
 import 'goal.dart';
-import 'models/goalsModel.dart';
+import 'models/goals_model.dart';
 
 class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _goals = <Goal>[];
+    final _goals = <GoalListItem>[];
 
     var listenedGoals = context.watch<GoalsModel>();
 
     for (var goal in listenedGoals.goals.entries) {
       _goals.add(
-        Goal(
+        GoalListItem(
           name: goal.key,
           value: goal.value,
           onChanged: (bool completed) {
