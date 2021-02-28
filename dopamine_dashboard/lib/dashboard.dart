@@ -53,7 +53,7 @@ class Dashboard extends StatelessWidget {
     return showDialog(
       context: context,
       builder: (_) => AssetGiffyDialog(
-        image: Image(image: AssetImage('images/success.gif')),
+        image: Image(image: AssetImage('images/success_pr_optimized.gif')),
         title: Text(
           'Congratulations!',
           style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
