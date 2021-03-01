@@ -96,7 +96,6 @@ class HomePage extends StatelessWidget {
       ),
       persistentFooterButtons: [
         Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             OutlinedButton(
               onPressed: () {

@@ -40,7 +40,6 @@ class GoalsModel extends ChangeNotifier {
   }
 
   Future<void> add(String goal) async {
-    // _goals[goal] = false;
     await database.insertGoal(Goal(name: goal));
     readFromDatabase();
   }
