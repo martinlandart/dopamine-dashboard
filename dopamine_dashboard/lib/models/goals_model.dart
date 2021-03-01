@@ -7,8 +7,8 @@ class GoalsModel extends ChangeNotifier {
   final Map<String, bool> _goals = Map<String, bool>();
   static final GoalDatabase database = GoalDatabase();
 
-  UnmodifiableListView<String> get names =>
-      UnmodifiableListView(_goals.keys.isEmpty ? List<String>() : _goals.keys);
+  UnmodifiableListView<String> get names => UnmodifiableListView(
+      _goals.keys.isEmpty ? List<String>() : _goals.keys.toList());
 
   UnmodifiableMapView<String, bool> get goals => UnmodifiableMapView(_goals);
 
