@@ -15,15 +15,9 @@ class GoalDatabase {
     );
   });
 
-  // Define a function that inserts dogs into the database
   Future<void> insertGoal(Goal goal) async {
-    // Get a reference to the database.
     final Database db = await database;
 
-    // Insert the Dog into the correct table. You might also specify the
-    // `conflictAlgorithm` to use in case the same dog is inserted twice.
-    //
-    // In this case, replace any previous data.
     await db.insert(
       'goals',
       goal.toMap(),
@@ -32,13 +26,10 @@ class GoalDatabase {
   }
 
   Future<List<Goal>> goals() async {
-    // Get a reference to the database.
     final Database db = await database;
 
-    // Query the table for all The Dogs.
     final List<Map<String, dynamic>> maps = await db.query('goals');
 
-    // Convert the List<Map<String, dynamic> into a List<Dog>.
     return List.generate(maps.length, (i) {
       return Goal(
         name: maps[i]['name'],
@@ -48,15 +39,12 @@ class GoalDatabase {
   }
 
   Future<void> updateGoal(Goal goal) async {
-    // Get a reference to the database.
     final db = await database;
 
-    // Update the given Dog.
     await db.update(
       'goals',
       goal.toMap(),
       where: "name = ?",
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
       whereArgs: [goal.name],
     );
   }
@@ -68,15 +56,11 @@ class GoalDatabase {
   }
 
   Future<void> deleteGoal(String name) async {
-    // Get a reference to the database.
     final db = await database;
 
-    // Remove the Dog from the database.
     await db.delete(
       'goals',
-      // Use a `where` clause to delete a specific dog.
       where: "name = ?",
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
       whereArgs: [name],
     );
   }
