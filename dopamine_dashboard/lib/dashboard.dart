@@ -4,30 +4,49 @@ import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:provider/provider.dart';
 
+class _ListItem extends StatelessWidget {
+  final String goalName;
+  final int index;
+
+  _ListItem({@required this.index, Key key, @required this.goalName})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var isComplete =
+        context.select<GoalsModel, bool>((goals) => goals.goals[goalName]);
+
+    return GoalListItem(
+      name: goalName,
+      value: isComplete,
+      onChanged: (val) async =>
+          await context.read<GoalsModel>().update(goalName, val),
+      iconLocation: Icons.check,
+      color: Colors.greenAccent,
+    );
+  }
+}
+
 class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _goals = <GoalListItem>[];
+    var goals =
+        context.select<GoalsModel, List<String>>((goals) => goals.names);
 
-    var listenedGoals = context.watch<GoalsModel>();
+    if (goals.isEmpty) return Container();
+    // final _goalList = goals
+    //     .map(
+    //       (goal) => _ListItem(
+    //         goalName: goal,
+    //       ),
+    //     )
+    //     .toList();
 
-    for (var goal in listenedGoals.goals.entries) {
-      _goals.add(
-        GoalListItem(
-          name: goal.key,
-          value: goal.value,
-          onChanged: (bool completed) async {
-            return await listenedGoals.update(goal.key, completed);
-          },
-          iconLocation: Icons.check,
-          color: Colors.greenAccent,
-        ),
-      );
-    }
+    final _goalList = List<_ListItem>();
 
-    if (listenedGoals.allGoalsComplete()) {
+    if (context.select<GoalsModel, bool>((goals) => goals.allGoalsComplete())) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showAllGoalsCompletedDialog(context, listenedGoals);
+        showAllGoalsCompletedDialog(context);
       });
     }
 
@@ -35,21 +54,23 @@ class Dashboard extends StatelessWidget {
       child: ListView.builder(
         itemBuilder: (BuildContext context, int index) => Dismissible(
           key: UniqueKey(),
-          child: _goals[index],
+          child: _ListItem(
+            index: index,
+            goalName: goals[index],
+          ),
           onDismissed: (direction) async {
             // var name = _goals[index].name;
             // _goals.removeAt(index);
-            await listenedGoals.remove(_goals[index].name);
+            context.read<GoalsModel>().remove(goals[index]);
           },
           background: Container(color: Colors.red),
         ),
-        itemCount: _goals.length,
+        itemCount: goals.length,
       ),
     );
   }
 
-  Future showAllGoalsCompletedDialog(
-      BuildContext context, GoalsModel listenedGoals) {
+  Future showAllGoalsCompletedDialog(BuildContext context) {
     return showDialog(
       context: context,
       builder: (_) => AssetGiffyDialog(
@@ -66,7 +87,7 @@ class Dashboard extends StatelessWidget {
         entryAnimation: EntryAnimation.LEFT,
         onOkButtonPressed: () {
           Navigator.of(context).pop();
-          listenedGoals.resetAllGoalsState();
+          context.read<GoalsModel>().resetAllGoalsState();
         },
         onlyOkButton: true,
       ),
