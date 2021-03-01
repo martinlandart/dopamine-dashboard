@@ -58,6 +58,7 @@ class HomePage extends StatelessWidget {
             content: Form(
               key: _formKey,
               child: TextFormField(
+                  autofocus: true,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value.isEmpty) {
