@@ -34,15 +34,6 @@ class Dashboard extends StatelessWidget {
         context.select<GoalsModel, List<String>>((goals) => goals.names);
 
     if (goals.isEmpty) return Container();
-    // final _goalList = goals
-    //     .map(
-    //       (goal) => _ListItem(
-    //         goalName: goal,
-    //       ),
-    //     )
-    //     .toList();
-
-    final _goalList = List<_ListItem>();
 
     if (context.select<GoalsModel, bool>((goals) => goals.allGoalsComplete())) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
